@@ -26,6 +26,7 @@ async function run() {
     // await client.connect();
 
     const userCollection = client.db("nexusTravel").collection("users");
+    const touristSpotCollection = client.db("nexusTravel").collection("addTouristSpot");
 
     // Post a User To DB
     app.post("/users", async (req, res) => {
@@ -42,6 +43,26 @@ async function run() {
         res.send(result);
       }
     });
+
+    // Post a Tourist Spot To DB
+    app.post("/addTouristSpot", async (req, res) => {
+        const addInfo = req.body;
+        const result = await touristSpotCollection.insertOne(addInfo);
+        res.send(result)
+        console.log(result);
+    });
+
+    // Get All Tourists Spot Data From DB
+    app.get("/allTouristSpot", async (req, res) => {
+        const result = await touristSpotCollection.find().toArray();
+        res.send(result);
+    });
+    
+    
+
+
+
+
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
