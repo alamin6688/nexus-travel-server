@@ -1,5 +1,5 @@
 const express = require("express");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const cors = require("cors");
 const app = express();
@@ -26,7 +26,9 @@ async function run() {
     // await client.connect();
 
     const userCollection = client.db("nexusTravel").collection("users");
-    const touristSpotCollection = client.db("nexusTravel").collection("addTouristSpot");
+    const touristSpotCollection = client
+      .db("nexusTravel")
+      .collection("addTouristSpot");
 
     // Post a User To DB
     app.post("/users", async (req, res) => {
@@ -46,23 +48,28 @@ async function run() {
 
     // Post a Tourist Spot To DB
     app.post("/addTouristSpot", async (req, res) => {
-        const addInfo = req.body;
-        const result = await touristSpotCollection.insertOne(addInfo);
-        res.send(result)
-        console.log(result);
+      const addInfo = req.body;
+      const result = await touristSpotCollection.insertOne(addInfo);
+      res.send(result);
+      console.log(result);
     });
 
     // Get All Tourists Spot Data From DB
     app.get("/allTouristSpot", async (req, res) => {
-        const result = await touristSpotCollection.find().toArray();
-        res.send(result);
+      const result = await touristSpotCollection.find().toArray();
+      res.send(result);
     });
+
+    // Get Tourist Spot Details by ID
+    app.get("/allTouristSpot/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await touristSpotCollection.findOne(query);
+      res.send(result);
+      console.log(result);
+    });
+
     
-    
-
-
-
-
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
