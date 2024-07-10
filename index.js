@@ -89,8 +89,22 @@ async function run() {
       const query = { loggedUser: userEmail };
       const result = await myListCollection.find(query).toArray();
       res.send(result);
-      console.log(result);
     });
+
+    // Delete a Tourist Spot From My List
+    app.delete("/myList/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+
+      const result = await myListCollection.deleteOne(query);
+      if (result.deletedCount === 1) {
+        res.send(result);
+      } else {
+        res.status(404).send({ error: "Tourist spot not found" });
+      }
+    });
+
+    
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
