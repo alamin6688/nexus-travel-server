@@ -29,6 +29,7 @@ async function run() {
     const touristSpotCollection = client
       .db("nexusTravel")
       .collection("addTouristSpot");
+    const myListCollection = client.db("nexusTravel").collection("myList");
 
     // Post a User To DB
     app.post("/users", async (req, res) => {
@@ -66,10 +67,21 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await touristSpotCollection.findOne(query);
       res.send(result);
-      console.log(result);
     });
 
-    
+    // Post User Added List Data to DB
+    app.post("/myList", async (req, res) => {
+      const myList = req.body;
+      const query = { loggedUser: myList.loggedUser, cartId: myList.cartId };
+      const existingItem = await myListCollection.findOne(query);
+      if (existingItem) {
+        return res
+          .status(400)
+          .send({ message: "This tourist spot is already in your list!" });
+      }
+      const result = await myListCollection.insertOne(myList);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
