@@ -83,6 +83,15 @@ async function run() {
       res.send(result);
     });
 
+    // Get User's Added List Data from DB
+    app.get("/myList", async (req, res) => {
+      const userEmail = req.query.email;
+      const query = { loggedUser: userEmail };
+      const result = await myListCollection.find(query).toArray();
+      res.send(result);
+      console.log(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
