@@ -99,6 +99,18 @@ async function run() {
       res.send(result);
     });
 
+    // Update a Tourist Spot From My List
+    app.put("/my-list/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedInfo = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: updatedInfo,
+      };
+      const result = await myListCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     // Delete a Tourist Spot From My List
     app.delete("/my-List/:id", async (req, res) => {
       const id = req.params.id;
@@ -111,8 +123,6 @@ async function run() {
         res.status(404).send({ error: "Tourist spot not found!" });
       }
     });
-
-    // Update a Tourist Spot From My List
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
