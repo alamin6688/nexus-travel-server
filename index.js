@@ -70,7 +70,7 @@ async function run() {
     });
 
     // Post User Added List Data to DB
-    app.post("/myList", async (req, res) => {
+    app.post("/my-List", async (req, res) => {
       const myList = req.body;
       const query = { loggedUser: myList.loggedUser, cartId: myList.cartId };
       const existingItem = await myListCollection.findOne(query);
@@ -84,15 +84,23 @@ async function run() {
     });
 
     // Get User's Added List Data from DB
-    app.get("/myList", async (req, res) => {
+    app.get("/my-List", async (req, res) => {
       const userEmail = req.query.email;
       const query = { loggedUser: userEmail };
       const result = await myListCollection.find(query).toArray();
       res.send(result);
     });
 
+    // Get User's Specific List Item Data from DB
+    app.get("/my-List/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await myListCollection.findOne(query);
+      res.send(result);
+    });
+
     // Delete a Tourist Spot From My List
-    app.delete("/myList/:id", async (req, res) => {
+    app.delete("/my-List/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
 
@@ -100,11 +108,11 @@ async function run() {
       if (result.deletedCount === 1) {
         res.send(result);
       } else {
-        res.status(404).send({ error: "Tourist spot not found" });
+        res.status(404).send({ error: "Tourist spot not found!" });
       }
     });
 
-    
+    // Update a Tourist Spot From My List
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
