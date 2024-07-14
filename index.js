@@ -99,7 +99,13 @@ async function run() {
       res.send(result);
     });
 
-    // Get User's Added List Data from DB
+    // Get All My List Data From DB
+    app.get("/my-List", async (req, res) => {
+      const result = await myListCollection.find().toArray();
+      res.send(result);
+    });
+
+    // Get User's Added List Data from DB By Email
     app.get("/my-List", async (req, res) => {
       const userEmail = req.query.email;
       const query = { loggedUser: userEmail };
