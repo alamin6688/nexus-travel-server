@@ -1,12 +1,22 @@
 const express = require("express");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const app = express();
 require("dotenv").config();
 const cors = require("cors");
-const app = express();
 const port = process.env.PORT || 5000;
 
 // middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5000",
+      "http://localhost:5173",
+      "https://nexus-travel-client.web.app",
+      "https://nexus-travel-client.firebaseapp.com",
+      "https://elegant-concha-76b0a5.netlify.app",
+    ],
+  })
+);
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.nrlryfn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -38,13 +48,19 @@ async function run() {
       const existingUser = await userCollection.findOne(query);
       if (existingUser) {
         return res.send({
-          message: "User already exist",
+          message: "User already exist!",
         });
       }
       if (!existingUser) {
         const result = await userCollection.insertOne(user);
         res.send(result);
       }
+    });
+
+    // Get ALL Users From DB
+    app.get("/users", async (req, res) => {
+      const result = await userCollection.find().toArray();
+      res.send(result);
     });
 
     // Post a Tourist Spot To DB
