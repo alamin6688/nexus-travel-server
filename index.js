@@ -36,9 +36,6 @@ async function run() {
     // await client.connect();
 
     const userCollection = client.db("nexusTravel").collection("users");
-    const touristSpotCollection = client
-      .db("nexusTravel")
-      .collection("addTouristSpot");
     const myListCollection = client.db("nexusTravel").collection("myList");
 
     // Post a User To DB
@@ -63,66 +60,30 @@ async function run() {
       res.send(result);
     });
 
-    // Post a Tourist Spot To DB
-    app.post("/addTouristSpot", async (req, res) => {
-      const addInfo = req.body;
-      const result = await touristSpotCollection.insertOne(addInfo);
-      res.send(result);
-      console.log(result);
-    });
-
-    // Get All Tourists Spot Data From DB
-    app.get("/allTouristSpot", async (req, res) => {
-      const result = await touristSpotCollection.find().toArray();
-      res.send(result);
-    });
-
     // Get Tourist Spot Details by ID
     app.get("/allTouristSpot/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await touristSpotCollection.findOne(query);
-      res.send(result);
-    });
-
-    // Post User Added List Data to DB
-    app.post("/my-List", async (req, res) => {
-      const myList = req.body;
-      const query = { loggedUser: myList.loggedUser, cartId: myList.cartId };
-      const existingItem = await myListCollection.findOne(query);
-      if (existingItem) {
-        return res
-          .status(400)
-          .send({ message: "This tourist spot is already in your list!" });
-      }
-      const result = await myListCollection.insertOne(myList);
-      res.send(result);
-    });
-
-    // Get All My List Data From DB
-    app.get("/my-List", async (req, res) => {
-      const result = await myListCollection.find().toArray();
-      res.send(result);
-    });
-
-    // Get User's Added List Data from DB By Email
-    app.get("/my-List", async (req, res) => {
-      const userEmail = req.query.email;
-      const query = { loggedUser: userEmail };
-      const result = await myListCollection.find(query).toArray();
-      res.send(result);
-    });
-
-    // Get User's Specific List Item Data from DB
-    app.get("/my-List/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await myListCollection.findOne(query);
       res.send(result);
     });
 
-    // Update a Tourist Spot From My List
-    app.put("/my-list/:id", async (req, res) => {
+    // Post addInfo in My List Page
+    app.post("/allTouristSpot", async (req, res) => {
+      const addInfo = req.body;
+      const result = await myListCollection.insertOne(addInfo);
+      res.send(result);
+      console.log(result);
+    });
+
+    // Get addInfo in My List Page
+    app.get("/allTouristSpot", async (req, res) => {
+      const result = await myListCollection.find().toArray();
+      res.send(result);
+    });
+
+    // Update a Tourist Spot From My List Page
+    app.put("/allTouristSpot/:id", async (req, res) => {
       const id = req.params.id;
       const updatedInfo = req.body;
       const filter = { _id: new ObjectId(id) };
@@ -133,11 +94,10 @@ async function run() {
       res.send(result);
     });
 
-    // Delete a Tourist Spot From My List
-    app.delete("/my-List/:id", async (req, res) => {
+    // Delete a Tourist Spot From My List Page
+    app.delete("/allTouristSpot/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-
       const result = await myListCollection.deleteOne(query);
       if (result.deletedCount === 1) {
         res.send(result);
