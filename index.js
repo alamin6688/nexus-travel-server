@@ -13,7 +13,7 @@ app.use(
       "http://localhost:5173",
       "https://nexus-travel-client.web.app",
       "https://nexus-travel-client.firebaseapp.com",
-      "https://elegant-concha-76b0a5.netlify.app",
+      "https://nexus-travel.netlify.app",
     ],
   })
 );
